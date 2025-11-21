@@ -1,6 +1,0 @@
-- name: Ping all OPS445 hosts
-  hosts: ops445
-  become: false
-  tasks:
-    - name: Ping the hosts
-      ansible.builtin.ping:
