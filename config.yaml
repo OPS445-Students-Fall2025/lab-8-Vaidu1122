@@ -1,0 +1,23 @@
+---
+- name: Configure OPS445 hosts
+  hosts: ops445
+  become: true   # use sudo
+  tasks:
+    - name: Ensure cowsay is installed
+      ansible.builtin.package:
+        name: cowsay
+        state: present
+
+    - name: Create ops445 user
+      ansible.builtin.user:
+        name: ops445
+        state: present
+        shell: /bin/bash
+
+    - name: Create a motd file
+      ansible.builtin.copy:
+        dest: /etc/motd
+        content: "Welcome to OPS445 Ansible lab!\n"
+        owner: root
+        group: root
+        mode: '0644'
