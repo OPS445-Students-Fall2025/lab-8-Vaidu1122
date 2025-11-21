@@ -1,4 +1,3 @@
----
 - name: Configure OPS445 hosts
   hosts: ops445
   become: true   # use sudo
