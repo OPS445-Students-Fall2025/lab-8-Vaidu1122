@@ -1,0 +1,77 @@
+---
+- name: Configure OPS445 VM
+  hosts: vmlab
+  user: student
+  become: yes
+
+  vars:
+    seneca_id: "vpatel278"
+
+  tasks:
+    - name: Ensure Apache (httpd) is latest
+      yum:
+        name: httpd
+        state: latest
+
+    - name: Ensure EPEL repo is installed
+      yum:
+        name: epel-release
+        state: present
+
+    - name: Remove tree package
+      yum:
+        name: tree
+        state: absent
+
+    - name: Set hostname to Seneca ID
+      hostname:
+        name: "{{ seneca_id }}"
+
+    - name: Create user with Seneca ID and wheel group
+      user:
+        name: "{{ seneca_id }}"
+        groups: "wheel"
+        append: yes
+        state: present
+        create_home: yes
+
+    - name: Create .ssh directory for new user
+      file:
+        path: "/home/{{ seneca_id }}/.ssh"
+        state: directory
+        owner: "{{ seneca_id }}"
+        group: "{{ seneca_id }}"
+        mode: "0700"
+
+    - name: Copy SSH public key for new user
+      copy:
+        src: "my_key.pub"
+        dest: "/home/{{ seneca_id }}/.ssh/authorized_keys"
+        owner: "{{ seneca_id }}"
+        group: "{{ seneca_id }}"
+        mode: "0600"
+
+    - name: Create base ops445 directory
+      file:
+        path: "/home/{{ seneca_id }}/ops445"
+        state: directory
+        owner: "{{ seneca_id }}"
+        group: "{{ seneca_id }}"
+        mode: "0755"
+
+    - name: Create lab directories
+      file:
+        path: "/home/{{ seneca_id }}/ops445/lab{{ item }}"
+        state: directory
+        owner: "{{ seneca_id }}"
+        group: "{{ seneca_id }}"
+        mode: "0755"
+      loop:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
